@@ -6,6 +6,7 @@ def add(a=0, b=0):
     return a + b
 
 class TestApplyWithAdd(unittest.TestCase):
+    """Test apply() with a simple add function."""
 
     def test_returns_empty_list_if_empty_args(self):
         args_df = pd.DataFrame()

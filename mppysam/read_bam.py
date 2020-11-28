@@ -3,8 +3,16 @@ import mppysam.mp_helper as mpp
 import mppysam.pysam_helper as ph
 
 
-def read_bam(bamfilepath, contigs=None, starts=None, ends=None,
-             processes=None, timeout=None, chunks=None):
+def read_bam(bamfilepath, col_func=lambda x: x.to_dict(), userows=None,
+        contigs=None, starts=None, ends=None,
+        processes=None, timeout=None, chunkby=None, chunks=None):
+    return apply_bam(bamfilepath, col_func, userows,
+        contigs, starts, ends, processes, timeout, chunkby, chunks
+    )
+
+def apply_bam(bamfilepath, col_func, userows=None,
+        contigs=None, starts=None, ends=None,
+        processes=None, timeout=None, chunkby=None, chunks=None):
     kwargs_df = make_fetch_args(bamfilepath, contigs, starts, ends, chunks)
     res = mpp.apply(fetch, kwargs_df, processes=processes, timeout=timeout)
     return res
