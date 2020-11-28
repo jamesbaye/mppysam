@@ -3,7 +3,7 @@ import pandas as pd
 import mppysam.mp_helper as mpp
 
 def add(a=0, b=0):
-    return a + b
+    return (a + b, )
 
 class TestApplyWithAdd(unittest.TestCase):
     """Test apply() with a simple add function."""

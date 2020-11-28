@@ -6,5 +6,5 @@ def apply(func, args_df, processes=None, timeout=None):
         results = []
         for i in range(len(args_df.index)):
             results.append(pool.apply_async(func, args_df.iloc[i,]))
-        output = [res.get(timeout=timeout) for res in results]
+        output = [item for res in results for item in res.get(timeout=timeout)]
     return output

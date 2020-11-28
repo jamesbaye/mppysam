@@ -2,7 +2,6 @@ import unittest
 import pysam
 from unittest.mock import patch
 import mppysam.read_bam as rb
-import os
 
 def open_empty_pysam(*args, **kwargs):
     return MockPysamAlignmentFile()
@@ -120,25 +119,29 @@ class TestReadBam(unittest.TestCase):
     
     @patch("mppysam.pysam_helper.open_pysam", open_oneLine_pysam)
     def test_oneLine_open(self):
-        self.assertEqual(rb.read_bam("mock_oneLine_filepath", processes=1),
-            [open_oneLine_pysam().reads])
+        self.assertCountEqual(
+            rb.read_bam("mock_oneLine_filepath", processes=1),
+            open_oneLine_pysam().reads
+        )
     
     @patch("mppysam.pysam_helper.open_pysam", open_multiLine_pysam)
-    def test_oneLine_open(self):
-        self.assertEqual(rb.read_bam("mock_multiLine_filepath", processes=1),
-            [open_multiLine_pysam().reads])
+    def test_multiLine_open(self):
+        self.assertCountEqual(
+            rb.read_bam("mock_multiLine_filepath", processes=1),
+            open_multiLine_pysam().reads
+        )
     
     def test_bam_open_one_process(self):
         bam = rb.read_bam("./mppysam/tests/data/ex1_10k.bam", processes=1)
         self.assertEqual(
-            bam[0][0]["name"],
+            bam[0]["name"],
             "A00489:517:HMJTNDRXX:2:1261:18557:24831_AGACTC_CTTGTAATAT"
         )
     
     def test_bam_open_two_processes(self):
         bam = rb.read_bam("./mppysam/tests/data/ex1_10k.bam", processes=2)
         self.assertEqual(
-            bam[0][0]["name"],
+            bam[0]["name"],
             "A00489:517:HMJTNDRXX:2:1261:18557:24831_AGACTC_CTTGTAATAT"
         )
     
