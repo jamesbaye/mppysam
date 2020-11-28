@@ -1,5 +1,5 @@
 import pandas as pd
-import mppysam.multiproc as mpp
+import mppysam.mp_helper as mpp
 import mppysam.pysam_helper as ph
 
 
