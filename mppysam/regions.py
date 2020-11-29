@@ -31,10 +31,8 @@ def chunk_regions(regions, chunks, chunkby):
 
 def chunk_region(region, chunks):
     target_chunksize = region_length(region) / chunks
-    contig, start, stop = region
+    contig, start, _ = region
     chunk_start = start
-    chunk_stop = start + target_chunksize
     for _ in range(chunks):
-        yield Region(contig, round(chunk_start), round(chunk_stop))
-        chunk_start = chunk_stop
-        chunk_stop += target_chunksize
+        yield Region(contig, round(chunk_start), round(chunk_start + target_chunksize))
+        chunk_start += target_chunksize
