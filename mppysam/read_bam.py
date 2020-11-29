@@ -1,9 +1,10 @@
 from functools import partial
 import mppysam.mp_helper as mpp
 import mppysam.pysam_helper as ph
+import mppysam.regions as rg
 
 def read_bam(bamfilepath, row_func=None, regions=None,
-        processes=None, timeout=None, chunkby=None, chunks=None):
+        processes=None, timeout=None, chunkby="contig", chunks=None):
     """Read an indexed BAM file by row.
 
     Supports multiprocessing with flexible chunking strategies
@@ -32,21 +33,10 @@ def read_bam(bamfilepath, row_func=None, regions=None,
 
 def apply_bam(bamfilepath, row_func, regions=None,
         processes=None, timeout=None, chunkby=None, chunks=None):
-    if regions is None:
-        regions = [
-            ph.Region(contig, None, None)
-            for contig in ph.get_all_contigs(bamfilepath)
-        ]
+    regions = ph.get_all_regions(bamfilepath) if regions is None else regions
     return mpp.apply(
         partial(ph.fetch_rows, bamfilepath, row_func=row_func),
-        args_list = [(region,) for region in chunk_regions(regions, chunks)],
+        args_list = [(region,) for region in rg.chunk_regions(regions, chunks, chunkby)],
         processes=processes,
         timeout=timeout
     )
-
-def chunk_regions(regions, chunks):
-    if chunks is None or chunks < len(regions):
-        return regions
-    else:
-        # split contigs by len in order to get right number of chunks
-        raise NotImplementedError

@@ -87,6 +87,7 @@ class MockPysamAlignmentFile:
         self.reads = [] if reads is None else reads
         self.header = pysam.AlignmentHeader() if header is None else header
         self.references = self.header.references
+        self.lengths = self.header.lengths
     
     def __enter__(self):
         return self
@@ -128,6 +129,14 @@ class TestReadBam(unittest.TestCase):
     def test_multiLine_open(self):
         self.assertCountEqual(
             rb.read_bam("mock_multiLine_filepath", processes=1),
+            open_multiLine_pysam().reads
+        )
+    
+    @patch("mppysam.pysam_helper.open_pysam", open_multiLine_pysam)
+    def test_multiLine_open_chunkby_contig(self):
+        self.assertCountEqual(
+            rb.read_bam("mock_multiLine_filepath", processes=1,
+                chunkby="contig", chunks=10),
             open_multiLine_pysam().reads
         )
     
