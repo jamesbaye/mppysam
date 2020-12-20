@@ -23,8 +23,10 @@ def read_bam(bamfilepath, row_func=None, regions=None,
         timeout (int, optional): Number of seconds each process has to return its
             work before a `multiprocessing.TimeoutError` is raised.
             If None, no timeout is enforced.
-        chunkby:
-        chunks:
+        chunkby (str, optional): The chunking policy passsed to
+            `regions.chunk_regions`. Defaults to "contig".
+        chunks (int, optional): A number of desired chunks. Defaults to the number
+            of references (i.e. chromosomes) in file.
     """
     row_func = ph.segment_to_dict if row_func is None else row_func
     return apply_bam(bamfilepath, row_func, regions,
