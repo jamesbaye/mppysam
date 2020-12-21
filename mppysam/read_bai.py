@@ -14,7 +14,8 @@ def bai_path(bamfilepath):
 
 def read_bai(baifilepath):
     """Read BAI index file.
-    
+
+    Per-reference metadata (Magic bin number = 37450) is ignored.
     See https://samtools.github.io/hts-specs/SAMv1.pdf section 5.2.
     
     Args:
